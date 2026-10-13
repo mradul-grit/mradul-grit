@@ -1,0 +1,117 @@
+{
+  "login": "mradul-grit",
+  "name": "Mradul Tripathi",
+  "role": "AI & full-stack developer",
+  "typing": [
+    "building multi-agent AI copilots for network ops",
+    "detecting change in satellite imagery with PyTorch",
+    "shipping full-stack apps with React and FastAPI"
+  ],
+  "stack": [
+    {
+      "area": "Languages",
+      "items": [
+        "Python",
+        "TypeScript",
+        "JavaScript",
+        "Java"
+      ]
+    },
+    {
+      "area": "AI and ML",
+      "items": [
+        "PyTorch",
+        "Ollama · Llama 3",
+        "Qdrant",
+        "RemoteCLIP"
+      ]
+    },
+    {
+      "area": "Backend",
+      "items": [
+        "FastAPI",
+        "Java sockets"
+      ]
+    },
+    {
+      "area": "Frontend",
+      "items": [
+        "React",
+        "Next.js",
+        "Vite",
+        "Tailwind CSS",
+        "shadcn/ui"
+      ]
+    },
+    {
+      "area": "Delivery",
+      "items": [
+        "Git",
+        "Vercel"
+      ]
+    }
+  ],
+  "featured": [
+    {
+      "repo": "NetSentinel-AI",
+      "tagline": "Multi-agent network operations copilot that detects anomalies, finds root causes and recommends recovery.",
+      "stack": [
+        "FastAPI",
+        "Next.js",
+        "Ollama"
+      ]
+    },
+    {
+      "repo": "SIH-2026",
+      "tagline": "Smart India Hackathon 2026: natural-language search and change detection over satellite imagery.",
+      "stack": [
+        "PyTorch",
+        "FastAPI",
+        "Qdrant"
+      ]
+    },
+    {
+      "repo": "structor_ai",
+      "tagline": "AI learning planner that turns goals into scheduled, gamified progress tracking.",
+      "stack": [
+        "React",
+        "Vite",
+        "Tailwind"
+      ]
+    },
+    {
+      "repo": "snakegame",
+      "tagline": "Classic Snake in Java Swing with LAN multiplayer rooms and a live leaderboard.",
+      "stack": [
+        "Swing",
+        "Sockets"
+      ]
+    }
+  ],
+  "language_exclude": [],
+  "quests": [
+    {
+      "title": "Hold a 30-day contribution streak",
+      "metric": "longest_streak",
+      "target": 30
+    },
+    {
+      "title": "Open 10 pull requests",
+      "metric": "pull_requests",
+      "target": 10
+    },
+    {
+      "title": "Contribute to 3 repos I don't own",
+      "metric": "external_repos",
+      "target": 3
+    },
+    {
+      "title": "Ship 10 public repositories",
+      "metric": "public_repos",
+      "target": 10
+    }
+  ],
+  "leetcode": {
+    "username": ""
+  }
+}
