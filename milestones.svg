@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="210" viewBox="0 0 400 210" role="img" aria-labelledby="title desc">
+<title id="title">Milestones</title>
+<desc id="desc">Milestones: 2024-10-15 First contribution on record; 2026-05-18 First public repo: RetailVigil; 2026-10-02 Longest streak: 6 days; 2026-10-12 100th contribution; 2026-10-12 Busiest day: 83 contributions</desc>
+<style>
+  .t { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; fill: #E6EDF3; }
+  .m { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; }
+  .label { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; font-size: 11px; letter-spacing: 1.6px; fill: #8B98A9; }
+  .title { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-size: 15px; font-weight: 600; fill: #E6EDF3; }
+  .muted { fill: #8B98A9; }
+  .faint { fill: #77849A; }
+  .num { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-weight: 650; fill: #E6EDF3; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<defs>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#22D3EE" stop-opacity="0.9"/>
+    <stop offset="0.55" stop-color="#A78BFA" stop-opacity="0.6"/>
+    <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<rect x="0.5" y="0.5" width="399" height="209" rx="12" fill="#0F1522" stroke="#1F2A3C"/>
+<rect x="24" y="0.5" width="140" height="1.5" fill="url(#edge)"/>
+<text x="24" y="34" class="label">MILESTONES</text>
+<line x1="30" y1="58" x2="30" y2="162" stroke="#1F2A3C" stroke-width="1.5"/><circle cx="30" cy="58" r="4" fill="#0B0F17" stroke="#A78BFA" stroke-width="1.6"/><text x="46" y="62" class="m muted" font-size="11">2024-10-15</text><text x="134" y="62" class="t" font-size="12.5">First contribution on record</text><circle cx="30" cy="84" r="4" fill="#0B0F17" stroke="#A78BFA" stroke-width="1.6"/><text x="46" y="88" class="m muted" font-size="11">2026-05-18</text><text x="134" y="88" class="t" font-size="12.5">First public repo: RetailVigil</text><circle cx="30" cy="110" r="4" fill="#0B0F17" stroke="#A78BFA" stroke-width="1.6"/><text x="46" y="114" class="m muted" font-size="11">2026-10-02</text><text x="134" y="114" class="t" font-size="12.5">Longest streak: 6 days</text><circle cx="30" cy="136" r="4" fill="#0B0F17" stroke="#A78BFA" stroke-width="1.6"/><text x="46" y="140" class="m muted" font-size="11">2026-10-12</text><text x="134" y="140" class="t" font-size="12.5">100th contribution</text><circle cx="30" cy="162" r="4" fill="#0B0F17" stroke="#22D3EE" stroke-width="1.6"/><text x="46" y="166" class="m muted" font-size="11">2026-10-12</text><text x="134" y="166" class="t" font-size="12.5">Busiest day: 83 contributions</text>
+<text x="376" y="196" text-anchor="end" class="m faint" font-size="10">daily snapshot · 2026-10-17 08:32 UTC</text>
+</svg>

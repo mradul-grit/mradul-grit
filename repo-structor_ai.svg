@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="140" viewBox="0 0 400 140" role="img" aria-labelledby="title desc">
+<title id="title">structor_ai</title>
+<desc id="desc">structor_ai: AI learning planner that turns goals into scheduled, gamified progress tracking. Language: TypeScript.</desc>
+<style>
+  .t { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; fill: #E6EDF3; }
+  .m { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; }
+  .label { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; font-size: 11px; letter-spacing: 1.6px; fill: #8B98A9; }
+  .title { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-size: 15px; font-weight: 600; fill: #E6EDF3; }
+  .muted { fill: #8B98A9; }
+  .faint { fill: #77849A; }
+  .num { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-weight: 650; fill: #E6EDF3; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<defs>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#22D3EE" stop-opacity="0.9"/>
+    <stop offset="0.55" stop-color="#A78BFA" stop-opacity="0.6"/>
+    <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<rect x="0.5" y="0.5" width="399" height="139" rx="12" fill="#0F1522" stroke="#1F2A3C"/>
+<rect x="24" y="0.5" width="140" height="1.5" fill="url(#edge)"/>
+<text x="24" y="34" class="label">REPOSITORY</text>
+<text x="24" y="58" class="t" font-size="17" font-weight="650">structor_ai</text><text x="24" y="82" class="t muted" font-size="12.5">AI learning planner that turns goals into scheduled,</text><text x="24" y="100" class="t muted" font-size="12.5">gamified progress tracking.</text><circle cx="29" cy="114" r="5" fill="#3178c6"/><text x="39" y="118" class="t muted" font-size="11.5">TypeScript</text><text x="118" y="118" class="m faint" font-size="11">React</text><text x="166.0" y="118" class="m faint" font-size="11">Vite</text><text x="207.2" y="118" class="m faint" font-size="11">Tailwind</text><text x="376" y="34" text-anchor="end" class="m faint" font-size="10">updated 2026-10-12</text>
+
+</svg>

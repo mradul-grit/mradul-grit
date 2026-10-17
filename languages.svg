@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="210" viewBox="0 0 400 210" role="img" aria-labelledby="title desc">
+<title id="title">Languages</title>
+<desc id="desc">Language share by bytes across public repositories: TypeScript 60.6%, Python 21.3%, JavaScript 11.3%, CSS 3.8%, HTML 2.0%, Java 1.1%</desc>
+<style>
+  .t { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; fill: #E6EDF3; }
+  .m { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; }
+  .label { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; font-size: 11px; letter-spacing: 1.6px; fill: #8B98A9; }
+  .title { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-size: 15px; font-weight: 600; fill: #E6EDF3; }
+  .muted { fill: #8B98A9; }
+  .faint { fill: #77849A; }
+  .num { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-weight: 650; fill: #E6EDF3; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<defs>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#22D3EE" stop-opacity="0.9"/>
+    <stop offset="0.55" stop-color="#A78BFA" stop-opacity="0.6"/>
+    <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<rect x="0.5" y="0.5" width="399" height="209" rx="12" fill="#0F1522" stroke="#1F2A3C"/>
+<rect x="24" y="0.5" width="140" height="1.5" fill="url(#edge)"/>
+<text x="24" y="34" class="label">LANGUAGES</text>
+<clipPath id="lbar"><rect x="24" y="54" width="352" height="10" rx="5"/></clipPath><g clip-path="url(#lbar)"><rect x="24.0" y="54" width="213.7" height="10" fill="#3178c6"/><rect x="237.2" y="54" width="75.5" height="10" fill="#3572A5"/><rect x="312.2" y="54" width="40.3" height="10" fill="#f1e05a"/><rect x="352.0" y="54" width="13.8" height="10" fill="#663399"/><rect x="365.2" y="54" width="7.4" height="10" fill="#e34c26"/><rect x="372.1" y="54" width="4.4" height="10" fill="#b07219"/></g><circle cx="29.0" cy="94" r="5" fill="#3178c6"/><text x="42.0" y="98" class="t" font-size="13">TypeScript</text><text x="184.0" y="98" text-anchor="end" class="m muted" font-size="12">60.6%</text><circle cx="205.0" cy="94" r="5" fill="#3572A5"/><text x="218.0" y="98" class="t" font-size="13">Python</text><text x="360.0" y="98" text-anchor="end" class="m muted" font-size="12">21.3%</text><circle cx="29.0" cy="122" r="5" fill="#f1e05a"/><text x="42.0" y="126" class="t" font-size="13">JavaScript</text><text x="184.0" y="126" text-anchor="end" class="m muted" font-size="12">11.3%</text><circle cx="205.0" cy="122" r="5" fill="#663399"/><text x="218.0" y="126" class="t" font-size="13">CSS</text><text x="360.0" y="126" text-anchor="end" class="m muted" font-size="12">3.8%</text><circle cx="29.0" cy="150" r="5" fill="#e34c26"/><text x="42.0" y="154" class="t" font-size="13">HTML</text><text x="184.0" y="154" text-anchor="end" class="m muted" font-size="12">2.0%</text><circle cx="205.0" cy="150" r="5" fill="#b07219"/><text x="218.0" y="154" class="t" font-size="13">Java</text><text x="360.0" y="154" text-anchor="end" class="m muted" font-size="12">1.1%</text><text x="376" y="34" text-anchor="end" class="m faint" font-size="10">by bytes · public repos</text>
+<text x="376" y="196" text-anchor="end" class="m faint" font-size="10">daily snapshot · 2026-10-17 08:32 UTC</text>
+</svg>

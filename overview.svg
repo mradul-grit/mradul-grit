@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="210" viewBox="0 0 400 210" role="img" aria-labelledby="title desc">
+<title id="title">GitHub overview</title>
+<desc id="desc">contributions: 195, commits: 182, pull requests: 2, active days: 23, current streak: 0, longest streak: 6</desc>
+<style>
+  .t { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; fill: #E6EDF3; }
+  .m { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; }
+  .label { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; font-size: 11px; letter-spacing: 1.6px; fill: #8B98A9; }
+  .title { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-size: 15px; font-weight: 600; fill: #E6EDF3; }
+  .muted { fill: #8B98A9; }
+  .faint { fill: #77849A; }
+  .num { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-weight: 650; fill: #E6EDF3; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<defs>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#22D3EE" stop-opacity="0.9"/>
+    <stop offset="0.55" stop-color="#A78BFA" stop-opacity="0.6"/>
+    <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<rect x="0.5" y="0.5" width="399" height="209" rx="12" fill="#0F1522" stroke="#1F2A3C"/>
+<rect x="24" y="0.5" width="140" height="1.5" fill="url(#edge)"/>
+<text x="24" y="34" class="label">OVERVIEW</text>
+<text x="24.0" y="84" class="num" font-size="26">195<tspan font-size="15" fill="#8B98A9"></tspan></text><text x="24.0" y="104" class="t muted" font-size="12">contributions</text><text x="141.33333333333331" y="84" class="num" font-size="26">182<tspan font-size="15" fill="#8B98A9"></tspan></text><text x="141.33333333333331" y="104" class="t muted" font-size="12">commits</text><text x="258.66666666666663" y="84" class="num" font-size="26">2<tspan font-size="15" fill="#8B98A9"></tspan></text><text x="258.66666666666663" y="104" class="t muted" font-size="12">pull requests</text><text x="24.0" y="148" class="num" font-size="26">23<tspan font-size="15" fill="#8B98A9"></tspan></text><text x="24.0" y="168" class="t muted" font-size="12">active days</text><text x="141.33333333333331" y="148" class="num" font-size="26">0<tspan font-size="15" fill="#8B98A9">d</tspan></text><text x="141.33333333333331" y="168" class="t muted" font-size="12">current streak</text><text x="258.66666666666663" y="148" class="num" font-size="26">6<tspan font-size="15" fill="#8B98A9">d</tspan></text><text x="258.66666666666663" y="168" class="t muted" font-size="12">longest streak</text><text x="376" y="34" text-anchor="end" class="m faint" font-size="10">since 2024</text>
+<text x="376" y="196" text-anchor="end" class="m faint" font-size="10">daily snapshot · 2026-10-17 08:32 UTC</text>
+</svg>
