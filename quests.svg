@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="210" viewBox="0 0 400 210" role="img" aria-labelledby="title desc">
+<title id="title">Quests</title>
+<desc id="desc">Self-set goals, not achievements: Hold a 30-day contribution streak (in progress); Open 10 pull requests (in progress); Contribute to 3 repos I don&#x27;t own (in progress); Ship 10 public repositories (done)</desc>
+<style>
+  .t { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; fill: #E6EDF3; }
+  .m { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; }
+  .label { font-family: ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace; font-size: 11px; letter-spacing: 1.6px; fill: #8B98A9; }
+  .title { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-size: 15px; font-weight: 600; fill: #E6EDF3; }
+  .muted { fill: #8B98A9; }
+  .faint { fill: #77849A; }
+  .num { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif; font-weight: 650; fill: #E6EDF3; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<defs>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#22D3EE" stop-opacity="0.9"/>
+    <stop offset="0.55" stop-color="#A78BFA" stop-opacity="0.6"/>
+    <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<rect x="0.5" y="0.5" width="399" height="209" rx="12" fill="#0F1522" stroke="#1F2A3C"/>
+<rect x="24" y="0.5" width="140" height="1.5" fill="url(#edge)"/>
+<text x="24" y="34" class="label">QUESTS · GOALS</text>
+<text x="376" y="34" text-anchor="end" class="m faint" font-size="10">self-set</text><text x="24" y="64" class="m" font-size="12" fill="#77849A">○</text><text x="42" y="64" class="t" font-size="12.5">Hold a 30-day contribution streak</text><text x="376" y="64" text-anchor="end" class="m muted" font-size="11">6/30</text><defs><linearGradient id="q0" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#A78BFA"/></linearGradient></defs><rect x="42" y="72" width="334" height="4" rx="2.0" fill="#141B2B" stroke="#1F2A3C"/><rect x="42" y="72" width="66.8" height="4" rx="2.0" fill="url(#q0)"/><text x="24" y="98" class="m" font-size="12" fill="#77849A">○</text><text x="42" y="98" class="t" font-size="12.5">Open 10 pull requests</text><text x="376" y="98" text-anchor="end" class="m muted" font-size="11">2/10</text><defs><linearGradient id="q1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#A78BFA"/></linearGradient></defs><rect x="42" y="106" width="334" height="4" rx="2.0" fill="#141B2B" stroke="#1F2A3C"/><rect x="42" y="106" width="66.8" height="4" rx="2.0" fill="url(#q1)"/><text x="24" y="132" class="m" font-size="12" fill="#77849A">○</text><text x="42" y="132" class="t" font-size="12.5">Contribute to 3 repos I don&#x27;t own</text><text x="376" y="132" text-anchor="end" class="m muted" font-size="11">1/3</text><defs><linearGradient id="q2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#A78BFA"/></linearGradient></defs><rect x="42" y="140" width="334" height="4" rx="2.0" fill="#141B2B" stroke="#1F2A3C"/><rect x="42" y="140" width="111.3" height="4" rx="2.0" fill="url(#q2)"/><text x="24" y="166" class="m" font-size="12" fill="#22D3EE">✓</text><text x="42" y="166" class="t" font-size="12.5">Ship 10 public repositories</text><text x="376" y="166" text-anchor="end" class="m muted" font-size="11">10/10</text><defs><linearGradient id="q3" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#A78BFA"/></linearGradient></defs><rect x="42" y="174" width="334" height="4" rx="2.0" fill="#141B2B" stroke="#1F2A3C"/><rect x="42" y="174" width="334.0" height="4" rx="2.0" fill="url(#q3)"/>
+<text x="376" y="196" text-anchor="end" class="m faint" font-size="10">goals, not achievements</text>
+</svg>
