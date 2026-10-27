@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from .theme import BORDER, CARD_W, CYAN, MONO, PAD, PANEL_HI, TEXT, VIOLET, WIDE_W, card, esc
+from .theme import BORDER, CARD_W, CYAN, SANS, PAD, PANEL_HI, TEXT, VIOLET, WIDE_W, card, esc
 
-CHIP_H, CHAR = 24, 7.3  # chip height; monospace advance at 12px
+CHIP_H, CHAR = 26, 7.4  # chip height; average IBM Plex Sans advance at 13px
 
 
 def _chips(x: float, y: float, items: list[str], max_x: float, accent: str) -> tuple[str, float]:
@@ -16,7 +16,7 @@ def _chips(x: float, y: float, items: list[str], max_x: float, accent: str) -> t
         out.append(
             f'<rect x="{cx:.1f}" y="{cy}" width="{w:.1f}" height="{CHIP_H}" rx="6" fill="{PANEL_HI}" stroke="{BORDER}"/>'
             f'<rect x="{cx + 8:.1f}" y="{cy + CHIP_H / 2 - 2}" width="4" height="4" rx="1" fill="{accent}"/>'
-            f'<text x="{cx + 17:.1f}" y="{cy + 16}" font-family="{MONO}" font-size="12" fill="{TEXT}">{esc(item)}</text>'
+            f'<text x="{cx + 17:.1f}" y="{cy + 17}" font-family="{SANS}" font-size="13" fill="{TEXT}">{esc(item)}</text>'
         )
         cx += w + 8
     return "".join(out), cy + CHIP_H
@@ -37,4 +37,4 @@ def render(groups: list[dict], compact: bool = False) -> str:
         y = bottom + (14 if compact else 12)
     height = int(y + 14)
     desc = "Tech stack. " + " ".join(f"{g['area']}: {', '.join(g['items'])}." for g in groups)
-    return card(width, height, "".join(body), "Tech stack", "Stack", desc)
+    return card(width, height, "".join(body), "Tech stack", "Tools I use", desc)

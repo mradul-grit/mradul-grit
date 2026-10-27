@@ -4,7 +4,7 @@
 
 1. **Create the profile repository.** On GitHub, create a **public** repository named exactly `mradul-grit` under the `mradul-grit` account. GitHub shows its README on the profile page.
 2. **Push these files** to its `main` branch. The workflow asks for exactly the permissions it needs, so the repository's default Actions permissions can stay read-only.
-3. **Run the workflow once.** Go to *Actions → Profile cards → Run workflow*. The first run creates the `output` branch that the README images point to. Until it finishes, those images appear broken. The hero banner and stack card live on `main`, so they show right away.
+3. **Run the workflow once.** Go to *Actions → Profile cards → Run workflow*. The first run creates the `output` branch that the README images point to. Until it finishes, those images appear broken. The stack card lives on `main`, so it shows right away. The hero banner is built by the workflow too, so it also waits for the first run.
 4. Optional: **Turn on private contribution counts.** Go to *GitHub profile → Contribution settings → Include private contributions on my profile*. The calendar, streaks and XP then include private work as anonymous counts. Private repository names are never shown.
 
 ### Optional secrets
@@ -23,7 +23,8 @@ Set `"leetcode": { "username": "<your handle>" }` in `profile.config.json`, push
 
 | To change | Edit | Then |
 | :--- | :--- | :--- |
-| Name, role, typing lines, stack | `profile.config.json` | `python -m scripts.profile_cards.build --static` and commit `assets/` |
+| Name, role, typing lines | `profile.config.json` | push; the workflow rebuilds the hero |
+| Stack | `profile.config.json` | `python -m scripts.profile_cards.build --static` and commit `assets/stack*.svg` |
 | Featured repositories | `featured` in `profile.config.json` and the matching `<a><img>` lines in `README.md` | push; the workflow rebuilds the cards |
 | Quests (self-set goals) | `quests` in `profile.config.json` | push |
 | XP rules | `scripts/profile_cards/gamify.py` **and** `docs/XP_RULES.md` | `python -m unittest discover -s tests -t .` (fails if the two disagree) |
@@ -36,7 +37,9 @@ Nothing on this profile updates second by second. GitHub serves README images as
 
 | Element | Data source | Updates | If the source fails | Rate limits |
 | :--- | :--- | :--- | :--- | :--- |
-| Hero banner, stack card | `profile.config.json` | Only when you rebuild them with `--static` and commit. The typing animation is CSS that plays in the browser; it is not data. | Can't fail: the files are committed to `main` | none |
+| Hero text | `profile.config.json` | Daily, with the cards. The typing animation is CSS that plays in the browser; it is not data. | Can't fail: it needs no external data | none |
+| 3D contribution skyline in the hero (rendered with Blender) | The same GitHub contribution data, last 26 weeks | **Weekly** (Mondays 04:17 UTC), plus on manual and push runs, or whenever none exists yet. Rendering takes several minutes and downloads about 400 MB, so it isn't repeated daily. | The previous render is reused; if there never was one, the hero shows without the image | none (uses data from the cards job) |
+| Stack card | `profile.config.json` | Only when you rebuild it with `--static` and commit | Can't fail: committed to `main` | none |
 | Featured repository cards | GitHub GraphQL API (description, language, stars, last push) | **Daily** at 04:17 UTC, on manual runs, and on pushes that change the config or scripts | The last good card is kept with its original date; a missing or private repository shows "Data unavailable" | GraphQL: 1,000 points/hour for `GITHUB_TOKEN`. A run uses 2 queries. |
 | Overview, languages, contribution heatmap, last 30 days | GitHub GraphQL API (`contributionsCollection`) | Daily, same schedule | The previous snapshot is kept; on the first run, "Data unavailable" | same as above |
 | Level, XP, achievements, milestones, quests | Computed from the same API data by `gamify.py` | Daily, same schedule | Same as above; unknown values earn 0 XP and show `n/a` | none (no extra calls) |
@@ -48,13 +51,14 @@ Nothing on this profile updates second by second. GitHub serves README images as
 
 ## How the workflow is put together
 
-`.github/workflows/profile.yml` has three jobs:
+`.github/workflows/profile.yml` has four jobs:
 
 | Job | Permissions | What it does |
 | :--- | :--- | :--- |
 | `cards` | `contents: read` | Runs the unit tests, builds the GitHub cards and the optional LeetCode card. The last published snapshot is used as a fallback. |
+| `skyline` | `contents: read` | Renders the 3D skyline with Blender's Python module (`bpy`, pinned in `scripts/render3d/requirements.txt`) and builds the hero. A failed render never blocks the other cards. |
 | `snake` | `contents: read` | Generates `snake.svg` and `snake-dark.svg` and checks they are valid SVG files |
-| `publish` | `contents: write` | Combines the outputs, carries over the previous snake if this run's snake failed, and force-pushes one commit to the `output` branch |
+| `publish` | `contents: write` | Combines the outputs, carries over the previous snake, skyline and hero if this run couldn't rebuild them, and force-pushes one commit to the `output` branch |
 
 Notes:
 
@@ -67,3 +71,9 @@ Notes:
 ## Why there is no GitHub Pages dashboard
 
 Everything here works as static images, so a separate site isn't needed. If you later want data that loads when a visitor opens the page (for example, a real-time view or interactive charts), that would need a GitHub Pages site. The README can only link to it, because a README cannot run scripts.
+
+## Design notes
+
+* **Type.** Chakra Petch (headings and figures), IBM Plex Sans (text) and IBM Plex Mono (the hero's terminal lines), all under the SIL Open Font License. The fonts are subset to Latin and embedded in each SVG, because an image loaded through a README cannot fetch web fonts. They live in `assets/fonts/` with their license texts.
+* **Color.** Dark neutral panels with one cyan accent and one violet accent. Small text keeps at least 4.5:1 contrast on the panels.
+* **Skyline.** `scripts/render3d/skyline.py` builds one tower per day from the contribution calendar, with height on a square-root scale, and renders it with Cycles on the CPU. To preview locally: `pip install bpy==5.2.3`, then `python scripts/render3d/skyline.py --data data.json --out skyline.webp`.

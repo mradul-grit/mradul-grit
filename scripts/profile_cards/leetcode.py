@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from . import cards
-from .theme import CARD_W, PAD, PANEL_HI, card, esc, fmt_int
+from .theme import CARD_W, PAD, PANEL_HI, card, esc, fmt_int, stamp_text
 
 ENDPOINT = "https://leetcode.com/graphql"
 QUERY = """
@@ -67,18 +67,18 @@ def render(stats: dict) -> str:
         f'<text x="{PAD}" y="104" class="t muted" font-size="12">solved of {fmt_int(totals.get("All"))}</text>',
     ]
     if stats.get("ranking"):
-        body.append(f'<text x="{PAD}" y="124" class="m faint" font-size="11">rank {fmt_int(stats["ranking"])}</text>')
+        body.append(f'<text x="{PAD}" y="124" class="t faint" font-size="12">rank {fmt_int(stats["ranking"])}</text>')
     x0, w = PAD + 130, CARD_W - 2 * PAD - 130
     for i, level in enumerate(("Easy", "Medium", "Hard")):
         y = 66 + i * 38
         have, of = solved.get(level, 0), totals.get(level) or 1
         body.append(f'<text x="{x0}" y="{y}" class="t" font-size="12.5">{level}</text>')
-        body.append(f'<text x="{x0 + w}" y="{y}" text-anchor="end" class="m muted" font-size="11">{have}/{of}</text>')
+        body.append(f'<text x="{x0 + w}" y="{y}" text-anchor="end" class="t muted tn" font-size="12">{have}/{of}</text>')
         body.append(f'<rect x="{x0}" y="{y + 8}" width="{w}" height="5" rx="2.5" fill="{PANEL_HI}"/>')
         body.append(f'<rect x="{x0}" y="{y + 8}" width="{max(w * have / of, 2):.1f}" height="5" rx="2.5" fill="{COLORS[level]}"/>')
-    body.append(f'<text x="{CARD_W - PAD}" y="{PAD + 10}" text-anchor="end" class="m faint" font-size="10">@{esc(stats["username"])}</text>')
+    body.append(f'<text x="{CARD_W - PAD}" y="{PAD + 10}" text-anchor="end" class="t faint" font-size="11.5">@{esc(stats["username"])}</text>')
     desc = f"LeetCode: {solved.get('All')} problems solved (easy {solved.get('Easy')}, medium {solved.get('Medium')}, hard {solved.get('Hard')})."
-    return card(CARD_W, cards.ROW_H, "".join(body), "LeetCode", "LeetCode", desc, f"daily snapshot · {stats['generated_at']}")
+    return card(CARD_W, cards.ROW_H, "".join(body), "LeetCode", "LeetCode", desc, stamp_text(stats["generated_at"]))
 
 
 def build(config: dict, out: Path, previous: Path | None) -> int:

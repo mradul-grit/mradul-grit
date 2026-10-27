@@ -2,7 +2,8 @@
 
     python -m scripts.profile_cards.build --out dist                 # fetch with $GITHUB_TOKEN
     python -m scripts.profile_cards.build --out dist --data d.json   # render from saved data
-    python -m scripts.profile_cards.build --static                    # rewrite assets/hero*.svg
+    python -m scripts.profile_cards.build --static                    # rewrite assets/stack*.svg
+    python -m scripts.profile_cards.build --hero --skyline s.webp --out dist   # hero with the 3D skyline
 
 Failure policy: if the API cannot be reached, the previous run's cards (passed
 with --previous) are kept unchanged, so the profile shows the last good snapshot
@@ -88,6 +89,23 @@ def fallback(out: Path, previous: Path | None, config: dict, reason: str) -> Non
         write(out, f"repo-{f['repo'].lower()}.svg", cards.unavailable(f["repo"], "Repository", "Details unavailable right now.", cards.CARD_W, 140))
 
 
+SKYLINE_WEEKS = 26  # must match WEEKS in scripts/render3d/skyline.py
+SKYLINE_CAPTION = f"Each tower is one day of my last {SKYLINE_WEEKS} weeks on GitHub, rendered in Blender."
+
+
+def build_hero(config: dict, out: Path, skyline: Path | None) -> int:
+    """Hero with the skyline when it exists; without it (first run, failed render) the hero still renders."""
+    out.mkdir(parents=True, exist_ok=True)
+    image = skyline.read_bytes() if skyline and skyline.is_file() and skyline.stat().st_size else None
+    if image is None:
+        log("warning", "no skyline image; building the hero without it")
+    for layout, fname in (("wide", "hero.svg"), ("compact", "hero-compact.svg")):
+        svg = hero.render(config["name"], config["login"], config["role"], config["typing"], layout, image, SKYLINE_CAPTION)
+        write(out, fname, svg)
+    print(f"wrote hero.svg and hero-compact.svg to {out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--config", type=Path, default=ROOT / "profile.config.json")
@@ -95,16 +113,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--previous", type=Path, help="directory holding the last published cards")
     p.add_argument("--data", type=Path, help="render from a saved data file instead of the API")
     p.add_argument("--dump-data", type=Path, help="also save the normalized data here")
-    p.add_argument("--static", action="store_true", help="regenerate the static assets (hero, stack) and exit")
+    p.add_argument("--static", action="store_true", help="regenerate the static stack cards in assets/ and exit")
+    p.add_argument("--hero", action="store_true", help="only build hero.svg and hero-compact.svg")
+    p.add_argument("--skyline", type=Path, help="with --hero: the rendered skyline image (WebP)")
     p.add_argument("--leetcode", action="store_true", help="only build the LeetCode card")
     args = p.parse_args(argv)
     config = json.loads(args.config.read_text(encoding="utf-8"))
 
+    if args.hero:
+        return build_hero(config, args.out, args.skyline)
+
     if args.static:
-        for layout, fname in (("wide", "hero.svg"), ("compact", "hero-compact.svg")):
-            svg = hero.render(config["name"], config["login"], config["role"], config["typing"], layout)
-            (ROOT / "assets" / fname).write_text(svg, encoding="utf-8")
-            print(f"wrote assets/{fname}")
         for compact, fname in ((False, "stack.svg"), (True, "stack-compact.svg")):
             (ROOT / "assets" / fname).write_text(stack.render(config["stack"], compact), encoding="utf-8")
             print(f"wrote assets/{fname}")
@@ -128,6 +147,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.dump_data:
+        args.dump_data.parent.mkdir(parents=True, exist_ok=True)
         args.dump_data.write_text(json.dumps(data, indent=1), encoding="utf-8")
     failed = render_all(data, config, args.out)
     if failed:

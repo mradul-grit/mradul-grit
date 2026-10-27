@@ -1,4 +1,5 @@
-# Rebuilds the profile cards and the contribution snake, then publishes them to
+# Rebuilds the profile cards, the hero with its Blender-rendered skyline, and the
+# contribution snake, then publishes them to
 # the `output` branch as a single commit (force-pushed, so that branch never
 # grows a history). The README links to the files on that branch.
 #
@@ -58,7 +59,7 @@ jobs:
           # Optional PAT with read:user. Without it the built-in token is used,
           # which sees public activity (and private activity only as anonymous counts).
           GITHUB_TOKEN: ${{ secrets.PROFILE_STATS_TOKEN || github.token }}
-        run: python -m scripts.profile_cards.build --out dist --previous previous
+        run: python -m scripts.profile_cards.build --out dist --previous previous --dump-data data/data.json
 
       - name: Build LeetCode card
         run: python -m scripts.profile_cards.build --leetcode --out dist --previous previous
@@ -67,6 +68,95 @@ jobs:
         with:
           name: cards
           path: dist/
+          retention-days: 3
+          if-no-files-found: error
+
+      # Public data only; the skyline job reads it. Missing when the API was unreachable.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: data
+          path: data/
+          retention-days: 1
+          if-no-files-found: ignore
+
+  skyline:
+    name: Render 3D skyline and hero
+    needs: cards
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Fetch previous snapshot
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        continue-on-error: true
+        with:
+          ref: output
+          path: previous
+          persist-credentials: false
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        continue-on-error: true
+        with:
+          name: data
+          path: data
+
+      # Blender is a ~400 MB download, so the skyline is re-rendered weekly
+      # (Mondays), on manual and push runs, or when none exists yet. Other days
+      # reuse last render.
+      - name: Decide whether to render
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          render=false
+          if [ -s data/data.json ]; then
+            if [ "$EVENT" != "schedule" ] || [ "$(date -u +%u)" = "1" ] || [ ! -s previous/skyline.webp ]; then
+              render=true
+            fi
+          fi
+          echo "render=$render" >> "$GITHUB_OUTPUT"
+          echo "render=$render"
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: scripts/render3d/requirements.txt
+
+      - name: Install Blender (bpy)
+        if: steps.plan.outputs.render == 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libxrender1 libxxf86vm1 libxfixes3 libxi6 libxkbcommon0 libsm6 libgl1 > /dev/null
+          python -m pip install -r scripts/render3d/requirements.txt
+
+      - name: Render skyline
+        if: steps.plan.outputs.render == 'true'
+        continue-on-error: true
+        run: |
+          mkdir -p out
+          python scripts/render3d/skyline.py --data data/data.json --out out/skyline.webp
+
+      - name: Reuse the previous skyline if this run has none
+        run: |
+          mkdir -p out
+          if [ ! -s out/skyline.webp ] && [ -s previous/skyline.webp ]; then
+            cp previous/skyline.webp out/skyline.webp
+            echo "reused the previous skyline"
+          fi
+
+      - name: Build hero
+        run: python -m scripts.profile_cards.build --hero --skyline out/skyline.webp --out out
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: hero
+          path: out/
           retention-days: 3
           if-no-files-found: error
 
@@ -98,7 +188,7 @@ jobs:
 
   publish:
     name: Publish to output branch
-    needs: [cards, snake]
+    needs: [cards, snake, skyline]
     # Publish whenever the cards built, even if the snake failed: the previous
     # snake is carried over below.
     if: ${{ !cancelled() && needs.cards.result == 'success' }}
@@ -118,6 +208,12 @@ jobs:
           name: snake
           path: site
 
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        if: ${{ needs.skyline.result == 'success' }}
+        with:
+          name: hero
+          path: site
+
       - name: Fetch previous snapshot
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         continue-on-error: true
@@ -128,7 +224,7 @@ jobs:
 
       - name: Carry over anything this run could not rebuild
         run: |
-          for f in snake.svg snake-dark.svg; do
+          for f in snake.svg snake-dark.svg hero.svg hero-compact.svg skyline.webp; do
             if [ ! -s "site/$f" ] && [ -s "previous/$f" ]; then
               cp "previous/$f" "site/$f"
               echo "::warning::kept the previous $f"

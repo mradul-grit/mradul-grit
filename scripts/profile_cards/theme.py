@@ -7,7 +7,11 @@ loaded through <img> cannot fetch web fonts.
 
 from __future__ import annotations
 
+import base64
+from datetime import datetime
+from functools import lru_cache
 from html import escape
+from pathlib import Path
 
 # Palette: one primary accent (cyan), one secondary (violet), one quiet support
 # (blue). Everything else is neutral so the accents stay meaningful.
@@ -31,8 +35,19 @@ TIERS = {
     "gold": "#E8C268",
 }
 
-SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif"
-MONO = "ui-monospace,SFMono-Regular,'JetBrains Mono',Menlo,Consolas,'Liberation Mono',monospace"
+# Type: Chakra Petch (angular, technical) for display and figures, IBM Plex Sans
+# for reading text, IBM Plex Mono only for the hero's terminal lines. The fonts
+# are subset to Latin and embedded in each SVG, because an SVG loaded through
+# <img> cannot fetch web fonts. Licenses: assets/fonts/OFL.txt.
+DISPLAY = "'Chakra Petch','Segoe UI',Helvetica,Arial,sans-serif"
+SANS = "'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
+MONO = "'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"
+FONT_DIR = Path(__file__).resolve().parents[2] / "assets" / "fonts"
+FONTS = {  # family -> weights shipped in assets/fonts
+    "Chakra Petch": (600, 700),
+    "IBM Plex Sans": (400, 600),
+    "IBM Plex Mono": (400,),
+}
 
 # Layout (px). Everything sits on an 8px grid; PAD is the card's inner margin.
 PAD = 24
@@ -48,17 +63,48 @@ def esc(value: object) -> str:
     return escape(str(value), quote=True)
 
 
-def style_block() -> str:
+@lru_cache(maxsize=None)
+def _face(family: str, weight: int) -> str:
+    path = FONT_DIR / f"{family.lower().replace(' ', '-')}-{weight}.woff2"
+    data = base64.b64encode(path.read_bytes()).decode()
+    return f"@font-face {{ font-family: '{family}'; font-weight: {weight}; src: url(data:font/woff2;base64,{data}) format('woff2'); }}"
+
+
+def font_faces(svg_body: str) -> str:
+    """@font-face rules for the families this SVG actually uses."""
+    used = {"IBM Plex Sans", "Chakra Petch"}  # body text and card headings
+    if "IBM Plex Mono" in svg_body or 'class="m ' in svg_body or 'class="m"' in svg_body:
+        used.add("IBM Plex Mono")
+    bold = 'font-weight="700"' in svg_body
+    return "\n".join(_face(f, w) for f in sorted(used) for w in FONTS[f] if w != 700 or bold)
+
+
+def style_block(body: str = "") -> str:
     return f"""<style>
+  {font_faces(body)}
   .t {{ font-family: {SANS}; fill: {TEXT}; }}
   .m {{ font-family: {MONO}; }}
-  .label {{ font-family: {MONO}; font-size: 11px; letter-spacing: 1.6px; fill: {MUTED}; }}
-  .title {{ font-family: {SANS}; font-size: 15px; font-weight: 600; fill: {TEXT}; }}
+  .head {{ font-family: {DISPLAY}; font-size: 16px; font-weight: 600; fill: {TEXT}; letter-spacing: 0.2px; }}
   .muted {{ fill: {MUTED}; }}
   .faint {{ fill: {FAINT}; }}
-  .num {{ font-family: {SANS}; font-weight: 650; fill: {TEXT}; }}
+  .tn {{ font-variant-numeric: tabular-nums; }}
+  .num {{ font-family: {DISPLAY}; font-weight: 600; fill: {TEXT}; font-variant-numeric: tabular-nums; }}
   @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
 </style>"""
+
+
+def short_date(iso_day: str) -> str:
+    """2026-10-13 -> 13 Oct 2026"""
+    d = datetime.strptime(iso_day[:10], "%Y-%m-%d")
+    return f"{d.day} {d.strftime('%b %Y')}"
+
+
+def stamp_text(generated_at: str) -> str:
+    """'2026-10-13 15:09 UTC' -> 'Updated 13 Oct 2026, 15:09 UTC'"""
+    try:
+        return f"Updated {short_date(generated_at[:10])}, {generated_at[11:]}"
+    except ValueError:
+        return f"Updated {generated_at}"
 
 
 def card(width: int, height: int, body: str, title: str, label: str, desc: str, stamp: str | None = None) -> str:
@@ -66,23 +112,15 @@ def card(width: int, height: int, body: str, title: str, label: str, desc: str, 
     footer = ""
     if stamp:
         footer = (
-            f'<text x="{width - PAD}" y="{height - 14}" text-anchor="end" class="m faint" '
-            f'font-size="10">{esc(stamp)}</text>'
+            f'<text x="{width - PAD}" y="{height - 14}" text-anchor="end" class="t faint" '
+            f'font-size="11.5">{esc(stamp)}</text>'
         )
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">
 <title id="title">{esc(title)}</title>
 <desc id="desc">{esc(desc)}</desc>
-{style_block()}
-<defs>
-  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="{CYAN}" stop-opacity="0.9"/>
-    <stop offset="0.55" stop-color="{VIOLET}" stop-opacity="0.6"/>
-    <stop offset="1" stop-color="{VIOLET}" stop-opacity="0"/>
-  </linearGradient>
-</defs>
+{style_block(body + footer)}
 <rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="{RADIUS}" fill="{PANEL}" stroke="{BORDER}"/>
-<rect x="{PAD}" y="0.5" width="{min(140, width - 2 * PAD)}" height="1.5" fill="url(#edge)"/>
-<text x="{PAD}" y="{PAD + 10}" class="label">{esc(label.upper())}</text>
+<text x="{PAD}" y="{PAD + 12}" class="head">{esc(label)}</text>
 {body}
 {footer}
 </svg>

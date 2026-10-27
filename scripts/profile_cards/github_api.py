@@ -179,7 +179,8 @@ def normalize(base: dict, years: dict, login: str, now: datetime) -> dict:
             continue
         recent.append(
             {
-                "name": repo["name"] if repo["owner"]["login"].lower() == login.lower() else repo["nameWithOwner"],
+                # Short name only: the card column is narrow, and owner/name gets truncated mid-word.
+                "name": repo["name"],
                 "url": repo["url"],
                 "commits": item["contributions"]["totalCount"],
                 "language": (repo["primaryLanguage"] or {}).get("name"),

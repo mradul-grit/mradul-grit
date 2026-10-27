@@ -1,4 +1,9 @@
-"""Static hero banner. Regenerate with `python -m scripts.profile_cards.build --static`.
+"""Hero banner: name, role, typing line, and the Blender-rendered contribution skyline.
+
+The workflow renders the skyline (scripts/render3d/skyline.py) and calls
+`build --hero` to embed it here as a data URI: an SVG loaded through <img>
+cannot fetch other files. Without a skyline the hero still renders, just
+without the 3D image.
 
 The typing effect is pure CSS inside the SVG (clip-path width animated with
 steps()), so it works through GitHub's image proxy without any JavaScript.
@@ -6,17 +11,20 @@ steps()), so it works through GitHub's image proxy without any JavaScript.
 
 from __future__ import annotations
 
-from .theme import BG, BORDER, CYAN, FAINT, GRID, MONO, MUTED, SANS, TEXT, VIOLET, BLUE, esc
+import base64
+
+from .theme import BG, BORDER, CYAN, DISPLAY, FAINT, GRID, MONO, MUTED, SANS, TEXT, VIOLET, esc, style_block
 
 PHASE = 5.0  # seconds each phrase stays on screen
 
 # Two layouts: the wide banner, and a taller compact one served to narrow screens
 # through <picture media="(max-width: ...)"> so text stays legible on phones.
 LAYOUTS = {
-    "wide": dict(w=1200, h=340, x=72, prompt=(92, 15), name=(160, 62), role=(192, 20), typing=(228, 24), rule=270,
-                 net=(1010, 170, 1.0)),
-    "compact": dict(w=640, h=380, x=40, prompt=(70, 14), name=(132, 46), role=(162, 17), typing=(200, 15), rule=232,
-                    net=(500, 296, 0.55)),
+    # sky = (x, y, width) of the skyline image; its aspect ratio is fixed by the render (1400x640).
+    "wide": dict(w=1200, h=400, x=64, prompt=(100, 15), name=(176, 66), role=(212, 20), typing=(256, 19), rule=300,
+                 caption=(64, 352, "start", 13), sky=(540, 0, 700)),
+    "compact": dict(w=640, h=560, x=36, prompt=(64, 14), name=(128, 48), role=(160, 17), typing=(196, 14), rule=226,
+                    caption=(36, 538, "start", 12), sky=(0, 232, 640)),
 }
 
 
@@ -63,80 +71,55 @@ def _typing(phrases: list[str], x: int, y: int, size: int) -> tuple[str, str]:
     return "".join(css), "".join(groups)
 
 
-def _network(cx: int, cy: int, scale: float = 1.0) -> str:
-    """Quiet node graph on the right: the visual motif for 'systems that talk to each other'."""
-    nodes = [(0, 0), (-110, -70), (-140, 40), (-40, 105), (95, 70), (120, -50), (20, -115), (-200, -10)]
-    edges = [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1, 6), (1, 7), (2, 7), (3, 4), (4, 5), (5, 6), (2, 3)]
-    out = []
-    for a, b in edges:
-        (x1, y1), (x2, y2) = nodes[a], nodes[b]
-        out.append(f'<line x1="{cx + x1}" y1="{cy + y1}" x2="{cx + x2}" y2="{cy + y2}" stroke="{BORDER}" stroke-width="1.2"/>')
-    # A few edges carry a travelling pulse.
-    for i, (a, b) in enumerate([(7, 1), (1, 0), (2, 0), (0, 4), (0, 5)]):
-        (x1, y1), (x2, y2) = nodes[a], nodes[b]
-        color = CYAN if i % 2 == 0 else VIOLET
-        out.append(
-            f'<line x1="{cx + x1}" y1="{cy + y1}" x2="{cx + x2}" y2="{cy + y2}" stroke="{color}" stroke-width="1.6" '
-            f'stroke-linecap="round" stroke-dasharray="10 400" class="pulse" style="animation-delay:{i * 0.9:.1f}s"/>'
-        )
-    for i, (x, y) in enumerate(nodes):
-        r = 9 if i == 0 else 4.5
-        color = CYAN if i in (0, 4, 7) else (VIOLET if i in (1, 5) else BLUE)
-        glow = ' filter="url(#glow)"' if i == 0 else ""
-        out.append(f'<circle cx="{cx + x}" cy="{cy + y}" r="{r}" fill="{BG}" stroke="{color}" stroke-width="1.6"{glow}/>')
-    out.append(f'<circle cx="{cx}" cy="{cy}" r="3" fill="{CYAN}"/>')
-    return f'<g transform="translate({cx} {cy}) scale({scale}) translate({-cx} {-cy})">' + "".join(out) + "</g>"
-
-
-def render(name: str, login: str, role: str, phrases: list[str], layout: str = "wide") -> str:
+def render(name: str, login: str, role: str, phrases: list[str], layout: str = "wide",
+           skyline: bytes | None = None, caption: str | None = None) -> str:
     L = LAYOUTS[layout]
     W, H, x = L["w"], L["h"], L["x"]
     ty, tsize = L["typing"]
     type_css, type_svg = _typing(phrases, x + int(tsize * 1.1), ty, tsize)
     grid = "".join(f'<line x1="{gx}" y1="0" x2="{gx}" y2="{H}"/>' for gx in range(0, W + 1, 40))
     grid += "".join(f'<line x1="0" y1="{gy}" x2="{W}" y2="{gy}"/>' for gy in range(0, H + 1, 40))
-    halo_cx = L["net"][0] / W
-    halo_cy = L["net"][1] / H
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-labelledby="title desc">
-<title id="title">{esc(name)}</title>
-<desc id="desc">{esc(name)}, {esc(role)}. {esc(' / '.join(phrases))}.</desc>
-<style>
-{type_css}
-@keyframes pulse {{ from {{ stroke-dashoffset: 410; }} to {{ stroke-dashoffset: 0; }} }}
-.pulse {{ animation: pulse 4.5s linear infinite; }}
-@media (prefers-reduced-motion: reduce) {{ .pulse {{ animation: none; opacity: 0; }} }}
-</style>
-<defs>
-  <radialGradient id="halo" cx="{halo_cx:.2f}" cy="{halo_cy:.2f}" r="0.5">
-    <stop offset="0" stop-color="{CYAN}" stop-opacity="0.16"/>
-    <stop offset="0.5" stop-color="{VIOLET}" stop-opacity="0.06"/>
-    <stop offset="1" stop-color="{BG}" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="{BG}" stop-opacity="1"/>
-    <stop offset="0.45" stop-color="{BG}" stop-opacity="0.7"/>
-    <stop offset="1" stop-color="{BG}" stop-opacity="0.2"/>
-  </linearGradient>
-  <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="{CYAN}"/><stop offset="0.5" stop-color="{VIOLET}"/><stop offset="1" stop-color="{VIOLET}" stop-opacity="0"/>
-  </linearGradient>
-  <filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  <clipPath id="frame"><rect width="{W}" height="{H}" rx="16"/></clipPath>
-</defs>
-<g clip-path="url(#frame)">
+    art = ""
+    if skyline:
+        sx, sy, sw = L["sky"]
+        sh = sw * 640 / 1400
+        data = base64.b64encode(skyline).decode()
+        art = f'<image x="{sx}" y="{sy}" width="{sw}" height="{sh:.0f}" href="data:image/webp;base64,{data}" mask="url(#skymask)"/>'
+    cap = ""
+    if skyline and caption:
+        cx, cy, anchor, csize = L["caption"]
+        cap = f'<text x="{cx}" y="{cy}" text-anchor="{anchor}" font-family="{SANS}" font-size="{csize}" fill="{FAINT}">{esc(caption)}</text>'
+    # Wide: the text column sits left, so the image fades in from the left.
+    # Compact: the image sits under the text, so it fades in from the top.
+    fade = ('x1="0" y1="0" x2="1" y2="0"><stop offset="0.5" stop-color="#000"/><stop offset="0.7" stop-color="#fff"/>'
+            if layout == "wide" else
+            'x1="0" y1="0" x2="0" y2="1"><stop offset="0.36" stop-color="#000"/><stop offset="0.56" stop-color="#fff"/>')
+    body = f"""<g clip-path="url(#frame)">
   <rect width="{W}" height="{H}" fill="{BG}"/>
-  <g stroke="{GRID}" stroke-width="1">{grid}</g>
-  <rect width="{W}" height="{H}" fill="url(#fade)"/>
-  <rect width="{W}" height="{H}" fill="url(#halo)"/>
-  {_network(*L["net"])}
-  <rect x="0" y="0" width="{W}" height="2" fill="url(#rule)"/>
+  <g stroke="{GRID}" stroke-width="1" opacity="0.6">{grid}</g>
+  {art}
 </g>
 <rect x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="16" fill="none" stroke="{BORDER}"/>
-<text x="{x}" y="{L["prompt"][0]}" font-family="{MONO}" font-size="{L["prompt"][1]}" fill="{MUTED}" letter-spacing="0.5"><tspan fill="{CYAN}">~/</tspan>{esc(login)} <tspan fill="{FAINT}">$</tspan> whoami</text>
-<text x="{x - 2}" y="{L["name"][0]}" font-family="{SANS}" font-size="{L["name"][1]}" font-weight="700" fill="{TEXT}" letter-spacing="{-L["name"][1] / 40:.1f}">{esc(name)}</text>
+<text x="{x}" y="{L["prompt"][0]}" font-family="{MONO}" font-size="{L["prompt"][1]}" fill="{MUTED}"><tspan fill="{CYAN}">~/</tspan>{esc(login)} <tspan fill="{FAINT}">$</tspan> whoami</text>
+<text x="{x - 3}" y="{L["name"][0]}" font-family="{DISPLAY}" font-size="{L["name"][1]}" font-weight="700" fill="{TEXT}">{esc(name)}</text>
 <text x="{x}" y="{L["role"][0]}" font-family="{SANS}" font-size="{L["role"][1]}" fill="{MUTED}">{esc(role)}</text>
 <text x="{x}" y="{ty}" font-family="{MONO}" font-size="{tsize}" fill="{VIOLET}">›</text>
 {type_svg}
-<rect x="{x}" y="{L["rule"]}" width="56" height="2" fill="{CYAN}"/>
+<rect x="{x}" y="{L["rule"]}" width="48" height="3" fill="{CYAN}"/>
+{cap}"""
+    sky_desc = f" {caption}" if skyline and caption else ""
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-labelledby="title desc">
+<title id="title">{esc(name)}</title>
+<desc id="desc">{esc(name)}, {esc(role)}. {esc(' / '.join(phrases))}.{esc(sky_desc)}</desc>
+{style_block(body + 'class="m "')}
+<style>
+{type_css}
+</style>
+<defs>
+  <linearGradient id="skyfade" {fade}</linearGradient>
+  <mask id="skymask"><rect width="{W}" height="{H}" fill="url(#skyfade)"/></mask>
+  <clipPath id="frame"><rect width="{W}" height="{H}" rx="16"/></clipPath>
+</defs>
+{body}
 </svg>
 """

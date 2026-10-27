@@ -118,9 +118,38 @@ class CardTests(unittest.TestCase):
             assert_svg(self, stack.render(CONFIG["stack"], compact))
 
     def test_committed_assets_are_current(self):
-        for layout, fname in (("wide", "hero.svg"), ("compact", "hero-compact.svg")):
-            expected = hero.render(CONFIG["name"], CONFIG["login"], CONFIG["role"], CONFIG["typing"], layout)
+        for compact, fname in ((False, "stack.svg"), (True, "stack-compact.svg")):
+            expected = stack.render(CONFIG["stack"], compact)
             self.assertEqual((ROOT / "assets" / fname).read_text(encoding="utf-8"), expected, f"run build --static ({fname})")
+
+    def test_hero_with_and_without_skyline(self):
+        fake = b"RIFF\x00\x00\x00\x00WEBPVP8 "  # bytes only need to round-trip through base64
+        with tempfile.TemporaryDirectory() as out:
+            img = Path(out, "s.webp")
+            img.write_bytes(fake)
+            self.assertEqual(build.main(["--hero", "--skyline", str(img), "--out", out]), 0)
+            svg = Path(out, "hero.svg").read_text()
+            assert_svg(self, svg)
+            self.assertIn("data:image/webp;base64,", svg)
+            self.assertIn("Blender", svg)
+            # No skyline: the hero still renders, without an image or its caption.
+            self.assertEqual(build.main(["--hero", "--skyline", str(Path(out, "missing.webp")), "--out", out]), 0)
+            svg = Path(out, "hero-compact.svg").read_text()
+            assert_svg(self, svg)
+            self.assertNotIn("<image", svg)
+            self.assertNotIn("Blender", svg)
+
+    def test_skyline_weeks_match(self):
+        m = re.search(r"^WEEKS = (\d+)", (ROOT / "scripts" / "render3d" / "skyline.py").read_text(), re.M)
+        self.assertEqual(int(m.group(1)), build.SKYLINE_WEEKS)
+        self.assertIn(f"{build.SKYLINE_WEEKS} weeks", build.SKYLINE_CAPTION)
+
+    def test_fonts_embedded_and_stamp(self):
+        svg = cards.overview(sample_data(), gamify.progression(sample_data(), []))
+        self.assertIn("font-family: 'Chakra Petch'; font-weight: 600", svg)
+        self.assertNotIn("font-family: 'IBM Plex Mono'; font-weight", svg)  # only the hero embeds the mono face
+        self.assertIn("Updated 12 Oct 2026, 04:17 UTC", svg)
+        self.assertNotIn("·", svg)
 
     def test_empty_data(self):
         data = sample_data({})

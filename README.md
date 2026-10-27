@@ -6,15 +6,15 @@
 -->
 
 <picture>
-  <source media="(max-width: 600px)" srcset="assets/hero-compact.svg" />
-  <img src="assets/hero.svg" width="100%" alt="Mradul Tripathi, AI and full-stack developer. Building multi-agent AI copilots, satellite change detection, and full-stack apps with React and FastAPI." />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/mradul-grit/mradul-grit/output/hero-compact.svg" />
+  <img src="https://raw.githubusercontent.com/mradul-grit/mradul-grit/output/hero.svg" width="100%" alt="Mradul Tripathi, AI and full-stack developer. Building multi-agent AI copilots, satellite change detection, and full-stack apps with React and FastAPI. Beside the name, a 3D skyline rendered in Blender shows each day of the last 26 weeks of GitHub contributions as a tower." />
 </picture>
 
 <p align="center">
-  <a href="#featured-work">Featured&nbsp;work</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#activity">Activity</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#progression">Progression</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/mradul-grit?tab=repositories">All&nbsp;repositories</a>
+  <a href="#featured-work">Featured&nbsp;work</a>&emsp;&emsp;<a href="#activity">Activity</a>&emsp;&emsp;<a href="#progression">Progression</a>&emsp;&emsp;<a href="https://github.com/mradul-grit?tab=repositories">All&nbsp;repositories</a>
   <!-- Add more links when ready, for example:
-  &nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://www.linkedin.com/in/YOUR-HANDLE">LinkedIn</a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;<a href="mailto:you@example.com">Email</a>
+  &emsp;&emsp;<a href="https://www.linkedin.com/in/YOUR-HANDLE">LinkedIn</a>
+  &emsp;&emsp;<a href="mailto:you@example.com">Email</a>
   -->
 </p>
 
@@ -110,7 +110,7 @@ Reaching level *L* takes `50 × L × (L − 1)` XP. Full rules: [docs/XP_RULES.m
 <br />
 
 <p align="center">
-  <sub>Cards are rebuilt once a day by GitHub Actions. Each card shows the date of its snapshot.</sub>
+  <sub>The cards are rebuilt daily by GitHub Actions, and each one shows when it was last updated. The 3D skyline is re-rendered in Blender every Monday.</sub>
   <br />
   <sub><a href="#">Back to top</a></sub>
 </p>
