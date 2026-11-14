@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-11-14 11:26 UTC",
+  "level": 4,
+  "xp": 742,
+  "xp_rows": [
+    [
+      "contribution",
+      69,
+      207
+    ],
+    [
+      "active_day",
+      23,
+      115
+    ],
+    [
+      "pull_request",
+      0,
+      0
+    ],
+    [
+      "review",
+      0,
+      0
+    ],
+    [
+      "issue",
+      0,
+      0
+    ],
+    [
+      "public_repo",
+      10,
+      400
+    ],
+    [
+      "star",
+      2,
+      20
+    ],
+    [
+      "external_repo",
+      0,
+      0
+    ]
+  ],
+  "achievements": [
+    {
+      "key": "commits",
+      "tier": "bronze",
+      "value": 143
+    },
+    {
+      "key": "streak",
+      "tier": null,
+      "value": 6
+    },
+    {
+      "key": "active",
+      "tier": null,
+      "value": 23
+    },
+    {
+      "key": "repos",
+      "tier": "silver",
+      "value": 10
+    },
+    {
+      "key": "polyglot",
+      "tier": "bronze",
+      "value": 4
+    },
+    {
+      "key": "prs",
+      "tier": null,
+      "value": 0
+    },
+    {
+      "key": "reviews",
+      "tier": null,
+      "value": 0
+    },
+    {
+      "key": "oss",
+      "tier": null,
+      "value": 0
+    }
+  ],
+  "failed_cards": []
+}
